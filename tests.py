@@ -68,19 +68,28 @@ class TestPilgrim(object):
         orig.walk('E')
         assert orig.pos == (0, 1)
         assert orig.tax == 2
-        assert orig.route == ['E']
+        assert orig.path == ['E']
         assert orig.visited_edges == {frozenset([(0, 0), (0, 1)])}
         assert clone.pos == (0, 0)
         assert clone.tax == 0
-        assert clone.route == []
+        assert clone.path == []
         assert clone.visited_edges == set()
 
         clone.walk('S')
         assert orig.pos == (0, 1)
         assert orig.tax == 2
-        assert orig.route == ['E']
+        assert orig.path == ['E']
         assert orig.visited_edges == {frozenset([(0, 0), (0, 1)])}
         assert clone.pos == (1, 0)
         assert clone.tax == 0
-        assert clone.route == ['S']
+        assert clone.path == ['S']
         assert clone.visited_edges == {frozenset([(0, 0), (1, 0)])}
+
+    def test_find_path(self, pilgrim):
+        assert pilgrim.find_path(
+            target_pos=(4, 4),
+            target_tax=128
+        ) == [
+            'E', 'E', 'E', 'E',
+            'S', 'S', 'S', 'S'
+        ]
