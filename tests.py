@@ -7,11 +7,6 @@ def fixture_pilgrim():
     return src.Pilgrim()
 
 
-@pytest.fixture(name='riddle')
-def fixture_riddle(pilgrim):
-    return src.Riddle(pilgrim)
-
-
 class TestPilgrim(object):
 
     def test_sanity(self, pilgrim):
@@ -66,18 +61,9 @@ class TestPilgrim(object):
         assert pilgrim.pos == (0, 2)
         assert pilgrim.tax == 4
 
-
-class TestRiddle(object):
-
-    def test_sanity(self, riddle):
-        assert riddle.pilgrim.pos == (0, 0)
-        assert riddle.pilgrim.tax == 0
-        assert riddle.target_pos == (4, 4)
-        assert riddle.target_tax == 0
-
-    def test_clone(self, riddle):
-        orig = riddle.pilgrim
-        clone = riddle.clone_pilgrim(orig)
+    def test_clone(self, pilgrim):
+        orig = pilgrim
+        clone = pilgrim._clone()
 
         orig.walk('E')
         assert orig.pos == (0, 1)

@@ -27,6 +27,9 @@ class Pilgrim(object):
     def __repr__(self):
         return f'{self.__class__.__name__}(pos={self.pos}, tax={self.tax})'
 
+    def find_path(self, pos=(MAX_Y, MAX_X), tax=0):
+        raise NotImplementedError
+
     def walk(self, dir):
         new_pos = self._calc_new_pos(dir)
 
@@ -45,6 +48,16 @@ class Pilgrim(object):
         else:
             raise ValueError(f'Invalid pos: {new_pos}')
 
+    def _clone(self):
+        clone = self.__class__()
+
+        clone.pos = self.pos
+        clone.tax = self.tax
+        clone.route = self.route.copy()
+        clone.visited_edges = self.visited_edges.copy()
+
+        return clone
+
     def _calc_new_pos(self, dir):
         return tuple(map(sum, zip(self.pos, MOVES[dir])))
 
@@ -60,38 +73,12 @@ class Pilgrim(object):
         return TAXES[dir](self.tax)
 
 
-class Riddle(object):
-
-    def __init__(self, pilgrim, target_pos=(MAX_Y, MAX_X), target_tax=0):
-        self.pilgrim = pilgrim
-        self.target_pos = target_pos
-        self.target_tax = target_tax
-
-    def solve(self):
-        raise NotImplementedError
-
-    def clone_pilgrim(self, orig):
-        clone = Pilgrim()
-
-        clone.pos = orig.pos
-        clone.tax = orig.tax
-        clone.route = orig.route.copy()
-        clone.visited_edges = orig.visited_edges.copy()
-
-        return clone
-
-
-def create_initial_pilgrim():
+def main():
     pilgrim = Pilgrim()
     for _ in range(2):
         pilgrim.walk('E')
-    return pilgrim
 
-
-def main():
-    pilgrim = create_initial_pilgrim()
-    riddle = Riddle(pilgrim)
-    riddle.solve()
+    pilgrim.find_path()
 
 
 if __name__ == '__main__':
