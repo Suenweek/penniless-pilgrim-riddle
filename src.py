@@ -39,11 +39,11 @@ class Pilgrim(object):
         return f'{self.__class__.__name__}(pos={self.pos}, tax={self.tax})'
 
     def find_path(self, target_pos, target_tax):
-        for dir in MOVES:
+        for direct in MOVES:
             clone = self._clone()
 
             try:
-                clone.walk(dir)
+                clone.walk(direct)
             except WalkError:
                 continue
 
@@ -57,20 +57,20 @@ class Pilgrim(object):
 
         return None
 
-    def walk(self, dir):
-        new_pos = self._calc_new_pos(dir)
+    def walk(self, direct):
+        new_pos = self._calc_new_pos(direct)
 
         if self._can_reach(new_pos):
             edge = self._make_edge(new_pos)
 
             if edge not in self.visited_edges:
                 self.pos = new_pos
-                self.path.append(dir)
+                self.path.append(direct)
                 self.visited_edges.add(edge)
-                self.tax = self._calc_tax(dir)
+                self.tax = self._calc_tax(direct)
 
             else:
-                raise WalkError(f'Road already walked: {edge}')
+                raise WalkError(f'Edge already visited: {edge}')
 
         else:
             raise WalkError(f'Invalid pos: {new_pos}')
@@ -85,8 +85,8 @@ class Pilgrim(object):
 
         return clone
 
-    def _calc_new_pos(self, dir):
-        return tuple(map(sum, zip(self.pos, MOVES[dir])))
+    def _calc_new_pos(self, direct):
+        return tuple(map(sum, zip(self.pos, MOVES[direct])))
 
     @staticmethod
     def _can_reach(pos):
@@ -96,8 +96,8 @@ class Pilgrim(object):
     def _make_edge(self, new_pos):
         return frozenset([self.pos, new_pos])
 
-    def _calc_tax(self, dir):
-        return TAXES[dir](self.tax)
+    def _calc_tax(self, direct):
+        return TAXES[direct](self.tax)
 
 
 def main():
