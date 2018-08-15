@@ -66,7 +66,7 @@ class Pilgrim(object):
     def walk(self, direct):
         new_pos = self._calc_new_pos(direct)
 
-        if self._can_reach(new_pos):
+        if self._validate_pos(new_pos):
             edge = self._make_edge(new_pos)
 
             if edge not in self.visited_edges:
@@ -93,7 +93,7 @@ class Pilgrim(object):
         return tuple(map(sum, zip(self.pos, DIRECTS[direct])))
 
     @staticmethod
-    def _can_reach(pos):
+    def _validate_pos(pos):
         y, x = pos
         return MIN_X <= x <= MAX_X and MIN_Y <= y <= MAX_Y
 
