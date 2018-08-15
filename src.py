@@ -1,11 +1,3 @@
-GRID = [
-    [0.0, 0.1, 0.2, 0.3, 0.4],
-    [1.0, 1.1, 1.2, 1.3, 1.4],
-    [2.0, 2.1, 2.2, 2.3, 2.4],
-    [3.0, 3.1, 3.2, 3.3, 3.4],
-    [4.0, 4.1, 4.2, 4.3, 4.4]
-]
-
 MOVES = {
     'N': (-1, 0),
     'E': (0, +1),
@@ -21,15 +13,15 @@ TAXES = {
 }
 
 MIN_X = MIN_Y = 0
-MAX_X = MAX_Y = len(GRID) - 1
+MAX_X = MAX_Y = 4
 
 
 class Pilgrim(object):
 
-    def __init__(self, pos=(0, 0), tax=0):
+    def __init__(self, pos=(MIN_Y, MIN_X), tax=0):
         self.pos = pos
         self.tax = tax
-        self.route = [pos]
+        self.route = []
         self.visited_edges = set()
 
     def __repr__(self):
@@ -43,7 +35,7 @@ class Pilgrim(object):
 
             if edge not in self.visited_edges:
                 self.pos = new_pos
-                self.route.append(new_pos)
+                self.route.append(dir)
                 self.visited_edges.add(edge)
                 self.tax = self._calc_tax(dir)
 
@@ -68,11 +60,38 @@ class Pilgrim(object):
         return TAXES[dir](self.tax)
 
 
-def main():
-    pilgrim = Pilgrim()
+class Riddle(object):
 
+    def __init__(self, pilgrim, target_pos=(MAX_Y, MAX_X), target_tax=0):
+        self.pilgrim = pilgrim
+        self.target_pos = target_pos
+        self.target_tax = target_tax
+
+    def solve(self):
+        raise NotImplementedError
+
+    def clone_pilgrim(self, orig):
+        clone = Pilgrim()
+
+        clone.pos = orig.pos
+        clone.tax = orig.tax
+        clone.route = orig.route.copy()
+        clone.visited_edges = orig.visited_edges.copy()
+
+        return clone
+
+
+def create_initial_pilgrim():
+    pilgrim = Pilgrim()
     for _ in range(2):
         pilgrim.walk('E')
+    return pilgrim
+
+
+def main():
+    pilgrim = create_initial_pilgrim()
+    riddle = Riddle(pilgrim)
+    riddle.solve()
 
 
 if __name__ == '__main__':
