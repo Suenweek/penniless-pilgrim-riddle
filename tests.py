@@ -4,7 +4,10 @@ import src
 
 @pytest.fixture(name='pilgrim')
 def fixture_pilgrim():
-    return src.Pilgrim()
+    return src.Pilgrim(
+        pos=(0, 0),
+        tax=0
+    )
 
 
 class TestPilgrim(object):

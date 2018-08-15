@@ -5,7 +5,7 @@ See:
     https://www.youtube.com/watch?v=6sBB-gRhfjE
 """
 
-MOVES = {
+DIRECTS = {
     'N': (-1, 0),
     'E': (0, +1),
     'S': (+1, 0),
@@ -29,17 +29,23 @@ class WalkError(ValueError):
 
 class Pilgrim(object):
 
-    def __init__(self, pos=(MIN_Y, MIN_X), tax=0):
+    def __init__(self, pos, tax, path=None, visited_edges=None):
         self.pos = pos
         self.tax = tax
-        self.path = []
-        self.visited_edges = set()
+
+        if path is None:
+            path = []
+        self.path = path
+
+        if visited_edges is None:
+            visited_edges = set()
+        self.visited_edges = visited_edges
 
     def __repr__(self):
         return f'{self.__class__.__name__}(pos={self.pos}, tax={self.tax})'
 
     def find_path(self, target_pos, target_tax):
-        for direct in MOVES:
+        for direct in DIRECTS:
             clone = self._clone()
 
             try:
@@ -76,17 +82,15 @@ class Pilgrim(object):
             raise WalkError(f'Invalid pos: {new_pos}')
 
     def _clone(self):
-        clone = self.__class__()
-
-        clone.pos = self.pos
-        clone.tax = self.tax
-        clone.path = self.path.copy()
-        clone.visited_edges = self.visited_edges.copy()
-
-        return clone
+        return self.__class__(
+            pos=self.pos,
+            tax=self.tax,
+            path=self.path.copy(),
+            visited_edges=self.visited_edges.copy()
+        )
 
     def _calc_new_pos(self, direct):
-        return tuple(map(sum, zip(self.pos, MOVES[direct])))
+        return tuple(map(sum, zip(self.pos, DIRECTS[direct])))
 
     @staticmethod
     def _can_reach(pos):
@@ -101,13 +105,16 @@ class Pilgrim(object):
 
 
 def main():
-    pilgrim = Pilgrim()
+    pilgrim = Pilgrim(
+        pos=(MIN_Y, MIN_X),
+        tax=0
+    )
 
     pilgrim.walk('E')
     pilgrim.walk('E')
 
     path = pilgrim.find_path(
-        target_pos=(4, 4),
+        target_pos=(MAX_Y, MAX_X),
         target_tax=0
     )
     print(path)
