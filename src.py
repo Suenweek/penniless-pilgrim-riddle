@@ -5,17 +5,21 @@ See:
     https://www.youtube.com/watch?v=6sBB-gRhfjE
 """
 
-DIRECTS = {
-    'N': (-1, 0),
-    'E': (0, +1),
-    'S': (+1, 0),
-    'W': (0, -1)
-}
+from collections import OrderedDict
+
+
+# The ordering is based on the fact that CCW cycle reduces the tax.
+DIRECTS = OrderedDict((
+    ('S', (+1, 0)),
+    ('E', (0, +1)),
+    ('N', (-1, 0)),
+    ('W', (0, -1))
+))
 
 TAXES = {
-    'N': lambda tax: tax / 2,
-    'E': lambda tax: tax + 2,
     'S': lambda tax: tax * 2,
+    'E': lambda tax: tax + 2,
+    'N': lambda tax: tax / 2,
     'W': lambda tax: tax - 2
 }
 
